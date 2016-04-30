@@ -11,9 +11,14 @@ function respond() {
             postCC(request.name, request.user_id);
             this.res.end();
             break;
-        case "/asspic":
+	case "/clearcc":
             this.res.writeHead(200);
-            postImg();
+            clearCC(request.user_id);
+            this.res.end();
+            break;
+	case "/id":
+            this.res.writeHead(200);
+            postID(request.name, request.user_id);
             this.res.end();
             break;
         default:
@@ -35,6 +40,55 @@ function respond() {
         this.res.end();
     }
 }
+function postID(name, userId) {
+    var botResponse, options, body, botReq, nameLength;
+
+    nameLength = name.length;
+    botResponse = 'http://clashcaller.com/war/gbd6w';
+
+    options = {
+        hostname: 'api.groupme.com',
+        path: '/v3/bots/post',
+        method: 'POST'
+    };
+
+    body = {
+        "bot_id": botID,
+        "text": name + "'s UserID is: " + userId,
+        "attachments": [
+           {
+               "loci": [
+                 [
+                   12,
+                   nameLength
+                 ]
+               ],
+               "type": "mentions",
+               "user_ids": [
+                 userId
+               ]
+           }
+        ]
+    };
+
+    console.log('sending response to ' + botID);
+
+    botReq = HTTPS.request(options, function (res) {
+        if (res.statusCode == 202) {
+            //neat
+        } else {
+            console.log('rejecting bad status code ' + res.statusCode);
+        }
+    });
+
+    botReq.on('error', function (err) {
+        console.log('error posting message ' + JSON.stringify(err));
+    });
+    botReq.on('timeout', function (err) {
+        console.log('timeout posting message ' + JSON.stringify(err));
+    });
+    botReq.end(JSON.stringify(body));
+}
 
 function getCalls(num) {
     var xhr = new XMLHttpRequest();
@@ -42,7 +96,7 @@ function getCalls(num) {
     var postname = false, player1 = '';
     xhr.open("POST", "http://clashcaller.com/api.php", true);
     xhr.setRequestHeader("Content-type", 'application/x-www-form-urlencoded');
-    xhr.send("REQUEST=GET_FULL_UPDATE&warcode=u43at");
+    xhr.send("REQUEST=GET_FULL_UPDATE&warcode=gbd6w");
     xhr.onreadystatechange = function (returnval) {
         if (xhr.readyState == xhr.DONE && xhr.status == 200) {
             var respJSON = JSON.parse(xhr.responseText);
@@ -52,7 +106,7 @@ function getCalls(num) {
                     for (var cKey in callsJSON) {
                         var singleCallJSON = JSON.parse(JSON.stringify(callsJSON[cKey]));
                         for (var sKey in singleCallJSON) {
-                            if (sKey == 'posy' && singleCallJSON[sKey] == '1') {
+                            if (sKey == 'posy' && singleCallJSON[sKey] == num) {
                                 postname = true;
                             }
                             if (sKey == 'playername' && postname == true) {
@@ -118,7 +172,7 @@ function postCall(num, name) {
 
     xhr.open("POST", "http://clashcaller.com/api.php", true);
     xhr.setRequestHeader("Content-type", 'application/x-www-form-urlencoded');
-    xhr.send("REQUEST=APPEND_CALL&warcode=u43at&posy="+num+"&value="+name);
+    xhr.send("REQUEST=APPEND_CALL&warcode=gbd6w&posy=" + num + "&value=" + name);
     xhr.onreadystatechange = function (returnval) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             console.log(xhr.responseText);
@@ -128,7 +182,85 @@ function postCall(num, name) {
 
     var botResponse, options, body, botReq;
 
-    botResponse = 'Calling #' + (num + 1) + ' as ' + name;
+    botResponse = 'Calling #' + (num + 1) + ' as ' + name + ' for ' + name;
+
+    options = {
+        hostname: 'api.groupme.com',
+        path: '/v3/bots/post',
+        method: 'POST'
+    };
+
+    body = {
+        "bot_id": botID,
+        "text": botResponse
+    };
+
+    console.log('sending ' + botResponse + ' to ' + botID);
+
+    botReq = HTTPS.request(options, function (res) {
+        if (res.statusCode == 202) {
+            //neat
+        } else {
+            console.log('rejecting bad status code ' + res.statusCode);
+        }
+    });
+
+    botReq.on('error', function (err) {
+        console.log('error posting message ' + JSON.stringify(err));
+    });
+    botReq.on('timeout', function (err) {
+        console.log('timeout posting message ' + JSON.stringify(err));
+    });
+    botReq.end(JSON.stringify(body));
+    console.log('posting...');
+}
+
+function clearCC(userid) {
+var botResponse = 'Unauthorized user';
+if(userid == 22094613) {
+    var xhr = new XMLHttpRequest();
+for (var i = 0; i < 50; i++) {
+for (var j = 0; j < 5; j++) {
+var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://clashcaller.com/api.php", true);
+    xhr.setRequestHeader("Content-type", 'application/x-www-form-urlencoded');
+    xhr.send("REQUEST=DELETE_CALL&warcode=u43at&posy=" + i + "&posx=" + j);
+    xhr.onreadystatechange = function (returnval) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+            //check_for_update();
+        }
+    }
+}
+}
+for (var i = 0; i < 50; i++) {
+var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://clashcaller.com/api.php", true);
+    xhr.setRequestHeader("Content-type", 'application/x-www-form-urlencoded');
+    xhr.send("REQUEST=UPDATE_TARGET_NOTE&warcode=u43at&posy=" + i + "&value=");
+    xhr.onreadystatechange = function (returnval) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+            //check_for_update();
+        }
+    }
+}
+for (var i = 0; i < 50; i++) {
+var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://clashcaller.com/api.php", true);
+    xhr.setRequestHeader("Content-type", 'application/x-www-form-urlencoded');
+    xhr.send("REQUEST=UPDATE_TARGET_NAME&warcode=u43at&posy=" + i + "&value=");
+    xhr.onreadystatechange = function (returnval) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+            //check_for_update();
+        }
+    }
+} botResponse = 'Clearing clashcaller warcode u43at...\nThis may take a few seconds';
+}
+
+
+    var botResponse, options, body, botReq;
 
     options = {
         hostname: 'api.groupme.com',
@@ -181,78 +313,78 @@ function postImg() {
             }]
         };
     } else
-    if (randNum == 2) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/HHrP9GZ.jpg"
-            }]
-        };
-    } else
-    if (randNum == 3) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/ppEuj5F.jpg"
-            }]
-        };
-    } else
-    if (randNum == 4) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/jB9inTw.jpg"
-            }]
-        };
-    } else
-    if (randNum == 5) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/z9HLyA6.jpg"
-            }]
-        };
-    } else
-    if (randNum == 6) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/kAWZcGp.jpg"
-            }]
-        };
-    } else
-    if (randNum == 7) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/17lS9I9.jpg"
-            }]
-        };
-    } else
-    if (randNum == 8) {
-        body = {
-            "bot_id": botID,
-            "attachments" : [{
-                "type":"image",
-                "url":"http://i.imgur.com/xBra65Y.jpg"
-            }]
-        };
-    } else
-    if (randNum == 9) {
-        body = {
-            "bot_id": botID,
-            "attachments": [{
-                "type": "image",
-                "url": "http://i.imgur.com/2nnGixF.jpg"
-            }]
-        };
-    }
+        if (randNum == 2) {
+            body = {
+                "bot_id": botID,
+                "attachments": [{
+                    "type": "image",
+                    "url": "http://i.imgur.com/HHrP9GZ.jpg"
+                }]
+            };
+        } else
+            if (randNum == 3) {
+                body = {
+                    "bot_id": botID,
+                    "attachments": [{
+                        "type": "image",
+                        "url": "http://i.imgur.com/ppEuj5F.jpg"
+                    }]
+                };
+            } else
+                if (randNum == 4) {
+                    body = {
+                        "bot_id": botID,
+                        "attachments": [{
+                            "type": "image",
+                            "url": "http://i.imgur.com/jB9inTw.jpg"
+                        }]
+                    };
+                } else
+                    if (randNum == 5) {
+                        body = {
+                            "bot_id": botID,
+                            "attachments": [{
+                                "type": "image",
+                                "url": "http://i.imgur.com/z9HLyA6.jpg"
+                            }]
+                        };
+                    } else
+                        if (randNum == 6) {
+                            body = {
+                                "bot_id": botID,
+                                "attachments": [{
+                                    "type": "image",
+                                    "url": "http://i.imgur.com/kAWZcGp.jpg"
+                                }]
+                            };
+                        } else
+                            if (randNum == 7) {
+                                body = {
+                                    "bot_id": botID,
+                                    "attachments": [{
+                                        "type": "image",
+                                        "url": "http://i.imgur.com/17lS9I9.jpg"
+                                    }]
+                                };
+                            } else
+                                if (randNum == 8) {
+                                    body = {
+                                        "bot_id": botID,
+                                        "attachments": [{
+                                            "type": "image",
+                                            "url": "http://i.imgur.com/xBra65Y.jpg"
+                                        }]
+                                    };
+                                } else
+                                    if (randNum == 9) {
+                                        body = {
+                                            "bot_id": botID,
+                                            "attachments": [{
+                                                "type": "image",
+                                                "url": "http://i.imgur.com/2nnGixF.jpg"
+                                            }]
+                                        };
+                                    }
 
     console.log('sending asspic to ' + botID);
 
@@ -281,7 +413,7 @@ function postCC(name, userId) {
     var botResponse, options, body, botReq, nameLength;
 
     nameLength = name.length;
-    botResponse = 'http://clashcaller.com/war/u43at';
+    botResponse = 'http://clashcaller.com/war/gbd6w';
 
     options = {
         hostname: 'api.groupme.com',
@@ -291,21 +423,21 @@ function postCC(name, userId) {
 
     body = {
         "bot_id": botID,
-        "text": "here ya go @" + name + "\n" + botResponse ,
-	"attachments": [
-       {
-         "loci": [
-           [
-             12,
-             nameLength
-           ]
-         ],
-         "type": "mentions",
-         "user_ids": [
-           userId
-         ]
-       }
-     ]
+        "text": "here ya go @" + name + "\n" + botResponse,
+        "attachments": [
+           {
+               "loci": [
+                 [
+                   12,
+                   nameLength
+                 ]
+               ],
+               "type": "mentions",
+               "user_ids": [
+                 userId
+               ]
+           }
+        ]
     };
 
     console.log('sending ' + botResponse + ' to ' + botID);
